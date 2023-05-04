@@ -1,20 +1,6 @@
 # Compiled classes and built artifacts
 *.class
 build/**
-
-# Log file
-*.log
-
-# Intellij Idea
-.idea
-
-# Gradle
-.gradle/**
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -23,6 +9,19 @@ build/**
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Log file
+*.log
+
+# Intellij Idea
+.idea
+
+# Gradle
+.gradle
+!/gradle/wrapper/gradle-wrapper.jar
+
+# virtual machine crash logs
 hs_err_pid*
 replay_pid*
+
+# System specific files
+.DS_Store

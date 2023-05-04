@@ -1,6 +1,6 @@
 # Compiled classes and built artifacts
 *.class
-build
+build/**
 
 # Log file
 *.log
@@ -9,7 +9,7 @@ build
 .idea
 
 # Gradle
-.gradle
+.gradle/**
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

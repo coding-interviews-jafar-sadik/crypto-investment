@@ -11,7 +11,7 @@ In the CRYPTO_NAME_values.csv (e.g. BTC_values.csv) you can find one month’s p
 
 There are separate files for each crypto.
 
-## Requirements for the recommendation service:
+## Requirements for the recommendation service
 - Reads all the prices from the csv files
 - Calculates oldest/newest/min/max for each crypto for the whole month
 - Exposes an endpoint that will return a descending sorted list of all the cryptos,
@@ -21,7 +21,7 @@ crypto
 - Exposes an endpoint that will return the crypto with the highest normalized range for a
 specific day
 
-## Things to consider:
+## Things to consider
 - Documentation is our best friend, so it will be good to share one for the endpoints
 - Initially the cryptos are only five, but what if we want to include more? Will the
 recommendation service be able to scale?
@@ -30,6 +30,6 @@ endpoints from not currently supported cryptos
 - For some cryptos it might be safe to invest, by just checking only one month's time
 frame. However, for some of them it might be more accurate to check six months or even a year. Will the recommendation service be able to handle this?
 
-## Extra mile for recommendation service (optional):
+## Extra mile for recommendation service (optional)
 - In XM we run everything on Kubernetes, so containerizing the recommendation service will add great value
 - Malicious users will always exist, so it will be really beneficial if at least we can rate limit them (based on IP)

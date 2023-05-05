@@ -43,10 +43,10 @@ public class CryptoRepositoryImpl implements CryptoRepository {
     }
 
     private URL getResourceURL(String cryptoSymbol) {
-        String resourcePath = "prices/" + cryptoSymbol + "_values.csv";
+        String resourcePath = "prices/" + cryptoSymbol.toUpperCase() + "_values.csv";
         URL resource = getClass().getClassLoader().getResource(resourcePath);
         if (resource == null) {
-            throw new UnknownSymbolRuntimeException("Resource doesn't exist: " + "prices/" + cryptoSymbol + "_values.csv");
+            throw new UnknownSymbolRuntimeException("Resource doesn't exist: " + "prices/" + cryptoSymbol.toUpperCase() + "_values.csv");
         }
         return resource;
     }

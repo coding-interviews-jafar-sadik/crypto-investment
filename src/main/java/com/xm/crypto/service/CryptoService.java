@@ -2,6 +2,7 @@ package com.xm.crypto.service;
 
 import com.xm.crypto.dto.PriceRangeDetails;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CryptoService {

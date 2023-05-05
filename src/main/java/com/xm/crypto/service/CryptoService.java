@@ -1,11 +1,10 @@
 package com.xm.crypto.service;
 
+import com.xm.crypto.dto.DateRange;
 import com.xm.crypto.dto.PriceRangeDetails;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Optional;
 
 public interface CryptoService {
 
@@ -22,7 +21,7 @@ public interface CryptoService {
      * Returns cryptocurrencies ranked descending by normalized range
      *
      * @param limit limits size of returned ranking
+     * @param dateRange limits ranking only to a specific time period
      */
-    Flux<PriceRangeDetails> rankCryptos(Optional<Integer> limit);
-
+    Flux<PriceRangeDetails> rankCryptos(Integer limit, DateRange dateRange);
 }

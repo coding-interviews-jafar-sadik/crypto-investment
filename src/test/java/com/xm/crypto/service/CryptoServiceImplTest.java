@@ -1,5 +1,6 @@
 package com.xm.crypto.service;
 
+import com.xm.crypto.dto.DateRange;
 import com.xm.crypto.dto.PriceRangeDetails;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import com.xm.crypto.repository.CryptoRepository;
@@ -11,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.test.StepVerifier;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.xm.crypto.support.TestBuilders.priceHistory;
@@ -53,11 +53,28 @@ class CryptoServiceImplTest {
         when(repository.loadFullPriceHistory(LTC)).thenReturn(priceHistory(9f, 9.5f, 10f));
         when(repository.loadFullPriceHistory(XRP)).thenReturn(priceHistory(1f, 2f, 4f, 2f));
 
-        StepVerifier.create(cryptoService.rankCryptos(Optional.empty()))
+        StepVerifier.create(cryptoService.rankCryptos(Integer.MAX_VALUE, DateRange.unbounded()))
                 .expectNextMatches(symbol(XRP))
                 .expectNextMatches(symbol(ETH))
                 .expectNextMatches(symbol(LTC))
                 .expectNextMatches(symbol(BTC))
+                .verifyComplete();
+    }
+
+    @Test
+    void testLimitRankSizeToZero() {
+        StepVerifier.create(cryptoService.rankCryptos(0, DateRange.unbounded()))
+                .verifyComplete();
+    }
+
+    @Test
+    void testLimitRankSizeToOne() {
+        when(repository.getSupportedSymbols()).thenReturn(List.of(BTC, ETH));
+        when(repository.loadFullPriceHistory(BTC)).thenReturn(priceHistory(1f, 1f, 1f, 1f));
+        when(repository.loadFullPriceHistory(ETH)).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
+
+        StepVerifier.create(cryptoService.rankCryptos(1, DateRange.unbounded()))
+                .expectNextMatches(symbol(ETH))
                 .verifyComplete();
     }
 

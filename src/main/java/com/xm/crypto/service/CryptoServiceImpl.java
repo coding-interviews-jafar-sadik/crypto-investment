@@ -1,5 +1,6 @@
 package com.xm.crypto.service;
 
+import com.xm.crypto.dto.DateRange;
 import com.xm.crypto.dto.PriceRangeDetails;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import com.xm.crypto.repository.CryptoRepository;
@@ -8,7 +9,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class CryptoServiceImpl implements CryptoService {
@@ -21,8 +21,21 @@ public class CryptoServiceImpl implements CryptoService {
 
     @Override
     public Mono<PriceRangeDetails> calculatePriceRangeDetails(String cryptoSymbol) throws UnknownSymbolRuntimeException {
+        return calculatePriceRangeDetails(cryptoSymbol, DateRange.unbounded());
+    }
+
+    @Override
+    public Flux<PriceRangeDetails> rankCryptos(Integer limit, DateRange dateRange) {
+        return Flux.fromIterable(cryptoRepository.getSupportedSymbols())
+                .flatMap(symbol -> calculatePriceRangeDetails(symbol, dateRange))
+                .sort((o1, o2) -> Float.compare(o2.normalizedRange(), o1.normalizedRange()))
+                .take(limit);
+    }
+
+    private Mono<PriceRangeDetails> calculatePriceRangeDetails(String cryptoSymbol, DateRange dateRange) throws UnknownSymbolRuntimeException {
         ensureCryptoSymbolIsSupported(cryptoSymbol);
         return cryptoRepository.loadFullPriceHistory(cryptoSymbol.toUpperCase())
+                .filter(priceSnapshot -> dateRange.isWithinRange(priceSnapshot.getTimestamp()))
                 .reduce(new MutablePriceRangeDetails(), (acc, value) -> {
                     acc.minPrice = acc.hasMin() ? acc.minPrice.min(value.getPrice()) : value.getPrice();
                     acc.maxPrice = acc.hasMax() ? acc.maxPrice.max(value.getPrice()) : value.getPrice();
@@ -30,15 +43,8 @@ public class CryptoServiceImpl implements CryptoService {
                     acc.newestPrice = value.getPrice();
                     return acc;
                 })
+                .filter(it -> it.hasMin() && it.hasMax())
                 .map(it -> new PriceRangeDetails(cryptoSymbol.toUpperCase(), it.oldestPrice, it.newestPrice, it.minPrice, it.maxPrice));
-    }
-
-    @Override
-    public Flux<PriceRangeDetails> rankCryptos(Optional<Integer> limit) {
-        return Flux.fromIterable(cryptoRepository.getSupportedSymbols())
-                .flatMap(this::calculatePriceRangeDetails)
-                .sort((o1, o2) -> Float.compare(o2.normalizedRange(), o1.normalizedRange()))
-                .take(limit.orElse(Integer.MAX_VALUE));
     }
 
     private void ensureCryptoSymbolIsSupported(String cryptoSymbol) throws UnknownSymbolRuntimeException {

@@ -1,13 +1,14 @@
 package com.xm.crypto.exceptions;
 
+import lombok.Getter;
+
+@Getter
 public class UnknownSymbolRuntimeException extends RuntimeException {
 
-    public UnknownSymbolRuntimeException() {
-        super();
-    }
+    private final String unknownSymbol;
 
-    public UnknownSymbolRuntimeException(String message) {
-        super(message);
+    public UnknownSymbolRuntimeException(String unknownSymbol) {
+        this.unknownSymbol = unknownSymbol;
     }
 
 }

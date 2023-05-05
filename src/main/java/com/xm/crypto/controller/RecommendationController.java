@@ -19,8 +19,8 @@ public class RecommendationController {
     }
 
     @GetMapping("/{cryptoSymbol}")
-    public Mono<PriceRangeDetails> getPriceDetails(@PathVariable String cryptoSymbol) {
-        return cryptoService.getPriceDetails(cryptoSymbol);
+    public Mono<PriceRangeDetails> getPriceRangeDetails(@PathVariable String cryptoSymbol) {
+        return cryptoService.calculatePriceRangeDetails(cryptoSymbol);
     }
 
     @GetMapping

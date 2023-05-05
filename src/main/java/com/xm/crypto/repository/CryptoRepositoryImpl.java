@@ -31,11 +31,15 @@ public class CryptoRepositoryImpl implements CryptoRepository {
 
     @Override
     public Flux<PriceSnapshot> loadFullPriceHistory(String symbol) {
+        int tableHeaderRow = 1;
+        int timestampColumn = 0;
+        int priceColumn = 2;
+
         try (InputStream inputStream = getResourceURL(symbol).openStream(); Reader reader = new InputStreamReader(inputStream)) {
             CSVReader csvReader = new CSVReader(reader);
             return Flux.fromStream(csvReader.readAll().stream()
-                    .skip(1)
-                    .map(entry -> new PriceSnapshot(toLocalDateTime(parseLong(entry[0])), new BigDecimal(entry[2])))
+                    .skip(tableHeaderRow)
+                    .map(csv -> new PriceSnapshot(toLocalDateTime(parseLong(csv[timestampColumn])), new BigDecimal(csv[priceColumn])))
             );
         } catch (IOException | CsvException e) {
             throw new GenericApplicationRuntimeException(e);
@@ -46,7 +50,7 @@ public class CryptoRepositoryImpl implements CryptoRepository {
         String resourcePath = "prices/" + cryptoSymbol.toUpperCase() + "_values.csv";
         URL resource = getClass().getClassLoader().getResource(resourcePath);
         if (resource == null) {
-            throw new UnknownSymbolRuntimeException("Resource doesn't exist: " + "prices/" + cryptoSymbol.toUpperCase() + "_values.csv");
+            throw new UnknownSymbolRuntimeException(cryptoSymbol);
         }
         return resource;
     }

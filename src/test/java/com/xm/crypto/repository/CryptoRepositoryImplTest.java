@@ -10,6 +10,7 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 
+import static com.xm.crypto.support.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -25,7 +26,7 @@ class CryptoRepositoryImplTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"btc", "doge", "eth", "ltc", "xrp"})
+    @ValueSource(strings = {BTC, DOGE, ETH, LTC, XRP})
     void shouldReturnNonEmptyPriceHistoryForEachSupportedCrypto(String symbol) {
         StepVerifier.create(repository.loadFullPriceHistory(symbol))
                 .expectNextMatches(priceSnapshot -> priceSnapshot.getPrice().compareTo(BigDecimal.ZERO) > 0)

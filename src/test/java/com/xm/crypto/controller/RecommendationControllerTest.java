@@ -13,12 +13,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import static com.xm.crypto.utils.PriceSnapshotTestUtil.priceHistory;
-import static java.math.BigDecimal.ONE;
-import static java.math.BigDecimal.TEN;
+import static com.xm.crypto.support.TestBuilders.priceHistory;
+import static com.xm.crypto.support.TestBuilders.priceRangeDetails;
+import static com.xm.crypto.support.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -34,40 +33,48 @@ class RecommendationControllerTest {
     private WebTestClient webClient;
 
     @Test
-    void shouldCalculateDetailsForRequestedCrypto() {
-        when(repository.getSupportedSymbols()).thenReturn(List.of("BTC"));
-        when(repository.loadFullPriceHistory("BTC")).thenReturn(priceHistory(1f, 20.5f, 0.5f, 10f));
+    void shouldCalculatePriceRangeDetailsForRequestedCrypto() {
+        when(repository.getSupportedSymbols()).thenReturn(List.of(BTC));
+        when(repository.loadFullPriceHistory(BTC)).thenReturn(priceHistory(1f, 20.5f, 0.5f, 10f));
 
         PriceRangeDetails response = webClient.get().uri("/cryptos/BTC")
                 .exchange().expectBody(PriceRangeDetails.class).returnResult().getResponseBody();
 
         assertThat(response).usingRecursiveComparison().isEqualTo(
-                new PriceRangeDetails("BTC", ONE, TEN, new BigDecimal("0.5"), new BigDecimal("20.5"))
+                priceRangeDetails(BTC, 1f, 10f, 0.5f, 20.5f)
         );
     }
 
     @Test
+    void shouldCalculatePriceRangeDetailsEvenWhenUsingLowerCaseSymbol() {
+        when(repository.getSupportedSymbols()).thenReturn(List.of(BTC));
+        when(repository.loadFullPriceHistory(BTC)).thenReturn(priceHistory(1f, 20.5f, 0.5f, 10f));
+
+        webClient.get().uri("/cryptos/btc").exchange().expectStatus().isOk();
+    }
+
+    @Test
     void shouldRankCryptosByNormalizedRange() {
-        when(repository.getSupportedSymbols()).thenReturn(List.of("BTC", "ETH", "LTC"));
-        when(repository.loadFullPriceHistory("BTC")).thenReturn(priceHistory(1f, 1f, 1f, 1f));
-        when(repository.loadFullPriceHistory("ETH")).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
-        when(repository.loadFullPriceHistory("LTC")).thenReturn(priceHistory(9f, 9.5f, 10f));
+        when(repository.getSupportedSymbols()).thenReturn(List.of(BTC, ETH, LTC));
+        when(repository.loadFullPriceHistory(BTC)).thenReturn(priceHistory(1f, 1f, 1f, 1f));
+        when(repository.loadFullPriceHistory(ETH)).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
+        when(repository.loadFullPriceHistory(LTC)).thenReturn(priceHistory(9f, 9.5f, 10f));
 
         List<PriceRangeDetails> response = webClient.get().uri("/cryptos")
                 .exchange().expectBody(new ParameterizedTypeReference<List<PriceRangeDetails>>() {
                 }).returnResult().getResponseBody();
 
         assertThat(response).hasSize(3).containsSequence(
-                new PriceRangeDetails("ETH", ONE, new BigDecimal("2"), ONE, new BigDecimal("2")),
-                new PriceRangeDetails("LTC", new BigDecimal("9"), new BigDecimal("10"), new BigDecimal("9"), new BigDecimal("10")),
-                new PriceRangeDetails("BTC", ONE, ONE, ONE, ONE)
+                priceRangeDetails(ETH, 1, 2, 1, 2),
+                priceRangeDetails(LTC, 9, 10, 9, 10),
+                priceRangeDetails(BTC, 1, 1, 1, 1)
         );
     }
 
     @Test
-    void expectHTTP200_when_referringKnownCryptoSymbol() {
-        when(repository.getSupportedSymbols()).thenReturn(List.of("BTC"));
-        when(repository.loadFullPriceHistory("BTC")).thenReturn(Flux.empty());
+    void expectHTTP200WhenReferringKnownCryptoSymbol() {
+        when(repository.getSupportedSymbols()).thenReturn(List.of(BTC));
+        when(repository.loadFullPriceHistory(BTC)).thenReturn(Flux.empty());
 
         webClient.get().uri("/cryptos/BTC")
                 .exchange()
@@ -75,7 +82,7 @@ class RecommendationControllerTest {
     }
 
     @Test
-    void expectHTTP404_when_referringUnknownCryptoSymbol() {
+    void expectHTTP404WhenReferringUnknownCryptoSymbol() {
         webClient.get().uri("/cryptos/UNKNOWN")
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);

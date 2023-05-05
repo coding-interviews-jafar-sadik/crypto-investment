@@ -1,5 +1,24 @@
 # Crypto Investment
 
+## Development notes
+The project was created using `OpenJDK Runtime Environment Temurin-11.0.15+10` and `Gradle 7.6.1` 
+with a compatible Spring Boot version `2.7.11`.
+
+It can be built directly with Gradle wrapper `./gradlew build` and then run `java -jar build/libs/crypto-recommendation-service.jar`.
+
+Another option is to use Docker to build application and package it in a container `docker build -t crypto-recommendation-service:latest .`.
+Next, you can use the following command to run it on port 8080 `docker run -p 8080:8080 crypto-recommendation-service:latest`. 
+
+You will be able to access the application with web browser or even command line using tools like for example HTTPie: 
+```
+http :8080/cryptos/BTC
+http :8080/cryptos
+http get localhost:8080/cryptos limit==1
+http get localhost:8080/cryptos limit==1 from_date==2022-01-01 to_date==2022-01-01
+```
+
+Swagger documentation can be accessed [here](http://localhost:8080/swagger-ui.html#/recommendation-controller)
+
 ## Description
 It’s time for XM developers to invest their salaries on cryptos. The problem is that we have no idea of cryptos, so we are feeling a little bit afraid which crypto to choose. But is this actually a problem? Of course not! We are developers and we always implement solutions for all the problems we face.
 For this one, we decided to build a recommendation service. Initially, we will build something simple and through iterations we are going to transform it to a gold miner.

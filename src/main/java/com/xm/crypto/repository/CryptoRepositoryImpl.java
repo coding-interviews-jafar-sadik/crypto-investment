@@ -5,6 +5,7 @@ import com.opencsv.exceptions.CsvException;
 import com.xm.crypto.dto.PriceSnapshot;
 import com.xm.crypto.exceptions.GenericApplicationRuntimeException;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static java.lang.Long.parseLong;
 
+@Slf4j
 @Repository
 public class CryptoRepositoryImpl implements CryptoRepository {
 
@@ -42,6 +44,7 @@ public class CryptoRepositoryImpl implements CryptoRepository {
                     .map(csv -> new PriceSnapshot(toLocalDateTime(parseLong(csv[timestampColumn])), new BigDecimal(csv[priceColumn])))
             );
         } catch (IOException | CsvException e) {
+            log.warn("Failed to load price history for symbol '{}'", symbol, e);
             throw new GenericApplicationRuntimeException(e);
         }
     }
@@ -50,6 +53,7 @@ public class CryptoRepositoryImpl implements CryptoRepository {
         String resourcePath = "prices/" + cryptoSymbol.toUpperCase() + "_values.csv";
         URL resource = getClass().getClassLoader().getResource(resourcePath);
         if (resource == null) {
+            log.info("Resource doesn't exist: " + "prices/" + cryptoSymbol.toUpperCase() + "_values.csv");
             throw new UnknownSymbolRuntimeException(cryptoSymbol);
         }
         return resource;

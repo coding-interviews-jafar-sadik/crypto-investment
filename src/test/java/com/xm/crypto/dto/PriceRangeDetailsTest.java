@@ -18,5 +18,4 @@ class PriceRangeDetailsTest {
     void whenMaxIsEqualMinThenNormalizedRangeIsZero() {
         assertEquals(0.0f, new PriceRangeDetails(BTC, ONE, ONE, ONE, ONE).normalizedRange());
     }
-
 }

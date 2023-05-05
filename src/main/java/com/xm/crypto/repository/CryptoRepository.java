@@ -19,5 +19,4 @@ public interface CryptoRepository {
      * @return full price history
      */
     Flux<PriceSnapshot> loadFullPriceHistory(String cryptoSymbol);
-
 }

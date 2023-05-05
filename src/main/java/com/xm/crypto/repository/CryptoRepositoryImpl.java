@@ -3,6 +3,7 @@ package com.xm.crypto.repository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import com.xm.crypto.dto.PriceSnapshot;
+import com.xm.crypto.enums.SupportedCryptocurrencies;
 import com.xm.crypto.exceptions.GenericApplicationRuntimeException;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,9 @@ import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.Long.parseLong;
 
@@ -28,7 +31,9 @@ public class CryptoRepositoryImpl implements CryptoRepository {
 
     @Override
     public List<String> getSupportedSymbols() {
-        return List.of("BTC", "DOGE", "ETH", "LTC", "XRP");
+        return Arrays.stream(SupportedCryptocurrencies.values())
+                .map(Enum::toString)
+                 .collect(Collectors.toList());
     }
 
     @Override
@@ -62,5 +67,4 @@ public class CryptoRepositoryImpl implements CryptoRepository {
     private LocalDateTime toLocalDateTime(long timestamp) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
     }
-
 }

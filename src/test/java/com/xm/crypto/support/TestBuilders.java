@@ -18,5 +18,4 @@ public class TestBuilders {
     public static PriceRangeDetails priceRangeDetails(String symbol, float oldest, float newest, float min, float max) {
         return new PriceRangeDetails(symbol, new BigDecimal(oldest), new BigDecimal(newest), new BigDecimal(min), new BigDecimal(max));
     }
-
 }

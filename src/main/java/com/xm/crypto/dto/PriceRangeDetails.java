@@ -22,5 +22,4 @@ public class PriceRangeDetails {
     public float normalizedRange() {
         return (max.floatValue() - min.floatValue()) / min.floatValue();
     }
-
 }

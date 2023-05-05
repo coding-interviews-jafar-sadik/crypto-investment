@@ -87,5 +87,4 @@ class RecommendationControllerTest {
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND);
     }
-
 }

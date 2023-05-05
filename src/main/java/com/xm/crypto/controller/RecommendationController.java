@@ -32,5 +32,4 @@ public class RecommendationController {
     public ResponseEntity<String> handleUnknownSymbolException() {
         return ResponseEntity.notFound().build();
     }
-
 }

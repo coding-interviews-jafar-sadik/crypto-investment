@@ -40,5 +40,4 @@ class CryptoRepositoryImplTest {
         assertThatThrownBy(() -> repository.loadFullPriceHistory("unknown_symbol"))
                 .isInstanceOf(UnknownSymbolRuntimeException.class);
     }
-
 }

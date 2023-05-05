@@ -20,7 +20,7 @@ public class CryptoServiceImpl implements CryptoService {
 
     @Override
     public Mono<PriceRangeDetails> calculatePriceRangeDetails(String cryptoSymbol) throws UnknownSymbolRuntimeException {
-        ensureValidSymbol(cryptoSymbol);
+        ensureCryptoSymbolIsSupported(cryptoSymbol);
         return cryptoRepository.loadFullPriceHistory(cryptoSymbol.toUpperCase())
                 .reduce(new MutablePriceRangeDetails(), (acc, value) -> {
                     acc.minPrice = acc.hasMin() ? acc.minPrice.min(value.getPrice()) : value.getPrice();
@@ -39,7 +39,7 @@ public class CryptoServiceImpl implements CryptoService {
                 .sort((o1, o2) -> Float.compare(o2.normalizedRange(), o1.normalizedRange()));
     }
 
-    private void ensureValidSymbol(String cryptoSymbol) throws UnknownSymbolRuntimeException {
+    private void ensureCryptoSymbolIsSupported(String cryptoSymbol) throws UnknownSymbolRuntimeException {
         if (!cryptoRepository.getSupportedSymbols().contains(cryptoSymbol.toUpperCase())) {
             throw new UnknownSymbolRuntimeException(cryptoSymbol);
         }
@@ -66,5 +66,4 @@ public class CryptoServiceImpl implements CryptoService {
             return maxPrice != null;
         }
     }
-
 }

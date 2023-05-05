@@ -7,5 +7,4 @@ public interface TestConstants {
     String ETH = "ETH";
     String LTC = "LTC";
     String XRP = "XRP";
-
 }

@@ -10,5 +10,4 @@ class ApplicationSmokeTest {
     void applicationContextLoads() {
 
     }
-
 }

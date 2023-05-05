@@ -11,5 +11,4 @@ public class PriceSnapshot {
     LocalDateTime timestamp;
 
     BigDecimal price;
-
 }

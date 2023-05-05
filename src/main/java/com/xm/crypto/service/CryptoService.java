@@ -19,5 +19,4 @@ public interface CryptoService {
      * Returns cryptocurrencies ranked descending by normalized range
      */
     Flux<PriceRangeDetails> rankCryptos();
-
 }

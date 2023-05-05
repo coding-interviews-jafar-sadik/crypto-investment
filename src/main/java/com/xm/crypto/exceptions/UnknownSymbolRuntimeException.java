@@ -10,5 +10,4 @@ public class UnknownSymbolRuntimeException extends RuntimeException {
     public UnknownSymbolRuntimeException(String unknownSymbol) {
         this.unknownSymbol = unknownSymbol;
     }
-
 }

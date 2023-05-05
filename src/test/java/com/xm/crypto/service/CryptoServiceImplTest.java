@@ -69,5 +69,4 @@ class CryptoServiceImplTest {
         assertThatThrownBy(() -> cryptoService.calculatePriceRangeDetails("unknown_symbol"))
                 .isInstanceOf(UnknownSymbolRuntimeException.class);
     }
-
 }

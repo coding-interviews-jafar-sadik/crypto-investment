@@ -52,7 +52,7 @@ class RecommendationControllerTest {
     void expectHTTP200_when_referringKnownCryptoSymbol() {
         when(repository.getSupportedSymbols()).thenReturn(List.of("BTC"));
         when(repository.loadFullPriceHistory("BTC")).thenReturn(Flux.empty());
-Ż
+
         webClient.get().uri("/cryptos/BTC")
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK);

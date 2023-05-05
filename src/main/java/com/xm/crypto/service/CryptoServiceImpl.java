@@ -4,6 +4,7 @@ import com.xm.crypto.dto.PriceRangeDetails;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import com.xm.crypto.repository.CryptoRepository;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -29,6 +30,13 @@ public class CryptoServiceImpl implements CryptoService {
                     return acc;
                 })
                 .map(it -> new PriceRangeDetails(cryptoSymbol.toUpperCase(), it.oldestPrice, it.newestPrice, it.minPrice, it.maxPrice));
+    }
+
+    @Override
+    public Flux<PriceRangeDetails> rankCryptos() {
+        return Flux.fromIterable(cryptoRepository.getSupportedSymbols())
+                .flatMap(this::getPriceDetails)
+                .sort((o1, o2) -> Float.compare(o2.normalizedRange(), o1.normalizedRange()));
     }
 
     private void ensureValidSymbol(String cryptoSymbol) throws UnknownSymbolRuntimeException {

@@ -19,4 +19,8 @@ public class PriceRangeDetails {
 
     BigDecimal max;
 
+    public float normalizedRange() {
+        return (max.floatValue() - min.floatValue()) / min.floatValue();
+    }
+
 }

@@ -5,6 +5,7 @@ import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import com.xm.crypto.service.CryptoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -20,6 +21,11 @@ public class RecommendationController {
     @GetMapping("/{cryptoSymbol}")
     public Mono<PriceRangeDetails> getPriceDetails(@PathVariable String cryptoSymbol) {
         return cryptoService.getPriceDetails(cryptoSymbol);
+    }
+
+    @GetMapping
+    public Flux<PriceRangeDetails> getCryptosRank() {
+        return cryptoService.rankCryptos();
     }
 
     @ExceptionHandler({UnknownSymbolRuntimeException.class})

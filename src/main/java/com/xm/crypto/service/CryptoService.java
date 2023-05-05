@@ -15,4 +15,8 @@ public interface CryptoService {
      */
     Mono<PriceRangeDetails> getPriceDetails(String cryptoSymbol) throws UnknownSymbolRuntimeException;
 
+    /**
+     * Returns cryptocurrencies ranked descending by normalized range
+     */
+    Flux<PriceRangeDetails> rankCryptos();
 }

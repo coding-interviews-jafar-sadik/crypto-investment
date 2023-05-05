@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/cryptos")
 public class RecommendationController {
@@ -24,8 +26,10 @@ public class RecommendationController {
     }
 
     @GetMapping
-    public Flux<PriceRangeDetails> getCryptosRank() {
-        return cryptoService.rankCryptos();
+    public Flux<PriceRangeDetails> getCryptosRank(
+            @RequestParam(name = "limit", required = false) Optional<Integer> limit
+    ) {
+        return cryptoService.rankCryptos(limit);
     }
 
     @ExceptionHandler({UnknownSymbolRuntimeException.class})

@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class CryptoServiceImpl implements CryptoService {
@@ -33,10 +34,11 @@ public class CryptoServiceImpl implements CryptoService {
     }
 
     @Override
-    public Flux<PriceRangeDetails> rankCryptos() {
+    public Flux<PriceRangeDetails> rankCryptos(Optional<Integer> limit) {
         return Flux.fromIterable(cryptoRepository.getSupportedSymbols())
                 .flatMap(this::calculatePriceRangeDetails)
-                .sort((o1, o2) -> Float.compare(o2.normalizedRange(), o1.normalizedRange()));
+                .sort((o1, o2) -> Float.compare(o2.normalizedRange(), o1.normalizedRange()))
+                .take(limit.orElse(Integer.MAX_VALUE));
     }
 
     private void ensureCryptoSymbolIsSupported(String cryptoSymbol) throws UnknownSymbolRuntimeException {

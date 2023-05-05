@@ -5,10 +5,13 @@ import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 public interface CryptoService {
 
     /**
      * Calculates price details for a given cryptocurrency symbol.
+     *
      * @param cryptoSymbol cryptocurrency symbol for example BTC or XRP
      * @return min, max, first and last price for a given cryptocurrency
      * @throws UnknownSymbolRuntimeException for an unknown cryptocurrency symbol
@@ -17,6 +20,9 @@ public interface CryptoService {
 
     /**
      * Returns cryptocurrencies ranked descending by normalized range
+     *
+     * @param limit limits size of returned ranking
      */
-    Flux<PriceRangeDetails> rankCryptos();
+    Flux<PriceRangeDetails> rankCryptos(Optional<Integer> limit);
+
 }

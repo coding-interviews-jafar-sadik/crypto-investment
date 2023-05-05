@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.test.StepVerifier;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.xm.crypto.support.TestBuilders.priceHistory;
@@ -52,7 +53,7 @@ class CryptoServiceImplTest {
         when(repository.loadFullPriceHistory(LTC)).thenReturn(priceHistory(9f, 9.5f, 10f));
         when(repository.loadFullPriceHistory(XRP)).thenReturn(priceHistory(1f, 2f, 4f, 2f));
 
-        StepVerifier.create(cryptoService.rankCryptos())
+        StepVerifier.create(cryptoService.rankCryptos(Optional.empty()))
                 .expectNextMatches(symbol(XRP))
                 .expectNextMatches(symbol(ETH))
                 .expectNextMatches(symbol(LTC))

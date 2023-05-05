@@ -72,6 +72,20 @@ class RecommendationControllerTest {
     }
 
     @Test
+    void canLimitRankSizeByOptionalQueryParameter() {
+        when(repository.getSupportedSymbols()).thenReturn(List.of(BTC, ETH, LTC));
+        when(repository.loadFullPriceHistory(BTC)).thenReturn(priceHistory(1f, 1f, 1f, 1f));
+        when(repository.loadFullPriceHistory(ETH)).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
+        when(repository.loadFullPriceHistory(LTC)).thenReturn(priceHistory(9f, 9.5f, 10f));
+
+        List<PriceRangeDetails> response = webClient.get().uri("/cryptos?limit=2")
+                .exchange().expectBody(new ParameterizedTypeReference<List<PriceRangeDetails>>() {
+                }).returnResult().getResponseBody();
+
+        assertThat(response).hasSize(2);
+    }
+
+    @Test
     void expectHTTP200WhenReferringKnownCryptoSymbol() {
         when(repository.getSupportedSymbols()).thenReturn(List.of(BTC));
         when(repository.loadFullPriceHistory(BTC)).thenReturn(Flux.empty());

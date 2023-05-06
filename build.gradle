@@ -20,7 +20,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'ch.qos.logback:logback-classic'
-	implementation 'com.opencsv:opencsv:5.7.1'
+	implementation 'com.opencsv:opencsv:5.6'
 	implementation 'org.projectlombok:lombok'
 	implementation 'io.springfox:springfox-swagger2:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:2.10.5'

@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,6 +71,6 @@ public class CryptoRepositoryImpl implements CryptoRepository {
     }
 
     private LocalDateTime toLocalDateTime(long timestamp) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneOffset.UTC);
     }
 }

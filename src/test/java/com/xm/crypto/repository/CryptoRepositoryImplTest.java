@@ -36,21 +36,19 @@ class CryptoRepositoryImplTest {
     void shouldReturnPriceHistoryForEachSupportedCrypto(String symbol) {
         StepVerifier.create(repository.loadPriceHistory(symbol, DateRange.unbounded()))
                 .thenConsumeWhile(priceSnapshot -> true)
-                .expectComplete()
-                .verify();
+                .verifyComplete();
     }
 
     @Test
     void shouldReturnFullPriceHistoryForCrypto() {
         StepVerifier.create(repository.loadPriceHistory(BTC, DateRange.unbounded()))
-                .expectNext(priceSnapshot("2022-01-01T05:00:00", "46813.21"))
-                .expectNext(priceSnapshot("2022-01-01T08:00:00", "46979.61"))
-                .expectNext(priceSnapshot("2022-01-01T11:00:00", "47143.98"))
-                .expectNext(priceSnapshot("2022-01-09T19:40:00", "46871.09"))
-                .expectNext(priceSnapshot("2022-01-09T19:40:10", "46871.10"))
-                .expectNext(priceSnapshot("2022-01-09T19:40:20", "46871.11"))
-                .expectComplete()
-                .verify();
+                .expectNext(priceSnapshot("2022-01-01T04:00:00", "46813.21"))
+                .expectNext(priceSnapshot("2022-01-01T07:00:00", "46979.61"))
+                .expectNext(priceSnapshot("2022-01-01T10:00:00", "47143.98"))
+                .expectNext(priceSnapshot("2022-01-09T18:40:00", "46871.09"))
+                .expectNext(priceSnapshot("2022-01-09T18:40:10", "46871.10"))
+                .expectNext(priceSnapshot("2022-01-09T18:40:20", "46871.11"))
+                .verifyComplete();
     }
 
     @Test
@@ -59,11 +57,10 @@ class CryptoRepositoryImplTest {
         LocalDate DATE_2022_01_10 = LocalDate.parse("2022-01-10");
 
         StepVerifier.create(repository.loadPriceHistory(BTC, DateRange.of(DATE_2022_01_08, DATE_2022_01_10)))
-                .expectNext(priceSnapshot("2022-01-09T19:40:00", "46871.09"))
-                .expectNext(priceSnapshot("2022-01-09T19:40:10", "46871.10"))
-                .expectNext(priceSnapshot("2022-01-09T19:40:20", "46871.11"))
-                .expectComplete()
-                .verify();
+                .expectNext(priceSnapshot("2022-01-09T18:40:00", "46871.09"))
+                .expectNext(priceSnapshot("2022-01-09T18:40:10", "46871.10"))
+                .expectNext(priceSnapshot("2022-01-09T18:40:20", "46871.11"))
+                .verifyComplete();
     }
 
     @Test
@@ -71,16 +68,14 @@ class CryptoRepositoryImplTest {
         LocalDate DATE_2021_12_30 = LocalDate.parse("2021-12-30");
 
         StepVerifier.create(repository.loadPriceHistory(BTC, DateRange.of(DateRange.MIN, DATE_2021_12_30)))
-                .expectComplete()
-                .verify();
+                .verifyComplete();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {DOGE, LTC})
     void shouldHandleEmptyPriceHistory(String symbol) {
         StepVerifier.create(repository.loadPriceHistory(symbol, DateRange.unbounded()))
-                .expectComplete()
-                .verify();
+                .verifyComplete();
     }
 
     @Test

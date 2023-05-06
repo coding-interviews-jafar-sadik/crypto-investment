@@ -1,7 +1,7 @@
-FROM gradle:4.10-jdk11-slim as build_stage
+FROM gradle:8.1-jdk11 as build_stage
 COPY --chown=gradle:gradle . /home/gradle/project
 WORKDIR /home/gradle/project
-RUN ./gradlew build
+RUN ./gradlew clean build
 
 FROM openjdk:11-slim
 WORKDIR /app

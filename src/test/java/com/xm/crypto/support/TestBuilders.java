@@ -18,4 +18,8 @@ public class TestBuilders {
     public static PriceRangeDetails priceRangeDetails(String symbol, float oldest, float newest, float min, float max) {
         return new PriceRangeDetails(symbol, new BigDecimal(oldest), new BigDecimal(newest), new BigDecimal(min), new BigDecimal(max));
     }
+
+    public static PriceSnapshot priceSnapshot(String dateTime, String price) {
+        return new PriceSnapshot(LocalDateTime.parse(dateTime), new BigDecimal(price));
+    }
 }

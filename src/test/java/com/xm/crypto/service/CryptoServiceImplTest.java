@@ -36,7 +36,7 @@ class CryptoServiceImplTest {
     @Test
     void shouldCalculatePriceRangeDetailsForGivenSymbol() {
         when(repository.getSupportedSymbols()).thenReturn(List.of(BTC));
-        when(repository.loadFullPriceHistory(BTC)).thenReturn(
+        when(repository.loadPriceHistory(BTC, DateRange.unbounded())).thenReturn(
                 priceHistory(1f, 0.5f, 10.5f, 5f, 4f, 8f, 10f)
         );
 
@@ -48,10 +48,10 @@ class CryptoServiceImplTest {
     @Test
     void shouldRankCryptosDescendingByNormalizedRange() {
         when(repository.getSupportedSymbols()).thenReturn(List.of(BTC, ETH, LTC, XRP));
-        when(repository.loadFullPriceHistory(BTC)).thenReturn(priceHistory(1f, 1f, 1f, 1f));
-        when(repository.loadFullPriceHistory(ETH)).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
-        when(repository.loadFullPriceHistory(LTC)).thenReturn(priceHistory(9f, 9.5f, 10f));
-        when(repository.loadFullPriceHistory(XRP)).thenReturn(priceHistory(1f, 2f, 4f, 2f));
+        when(repository.loadPriceHistory(BTC, DateRange.unbounded())).thenReturn(priceHistory(1f, 1f, 1f, 1f));
+        when(repository.loadPriceHistory(ETH, DateRange.unbounded())).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
+        when(repository.loadPriceHistory(LTC, DateRange.unbounded())).thenReturn(priceHistory(9f, 9.5f, 10f));
+        when(repository.loadPriceHistory(XRP, DateRange.unbounded())).thenReturn(priceHistory(1f, 2f, 4f, 2f));
 
         StepVerifier.create(cryptoService.rankCryptos(Integer.MAX_VALUE, DateRange.unbounded()))
                 .expectNextMatches(symbol(XRP))
@@ -70,8 +70,8 @@ class CryptoServiceImplTest {
     @Test
     void testLimitRankSizeToOne() {
         when(repository.getSupportedSymbols()).thenReturn(List.of(BTC, ETH));
-        when(repository.loadFullPriceHistory(BTC)).thenReturn(priceHistory(1f, 1f, 1f, 1f));
-        when(repository.loadFullPriceHistory(ETH)).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
+        when(repository.loadPriceHistory(BTC, DateRange.unbounded())).thenReturn(priceHistory(1f, 1f, 1f, 1f));
+        when(repository.loadPriceHistory(ETH, DateRange.unbounded())).thenReturn(priceHistory(1f, 2f, 1.5f, 2f));
 
         StepVerifier.create(cryptoService.rankCryptos(1, DateRange.unbounded()))
                 .expectNextMatches(symbol(ETH))

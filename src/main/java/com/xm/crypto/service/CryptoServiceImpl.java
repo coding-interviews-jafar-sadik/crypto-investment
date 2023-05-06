@@ -34,8 +34,7 @@ public class CryptoServiceImpl implements CryptoService {
 
     private Mono<PriceRangeDetails> calculatePriceRangeDetails(String cryptoSymbol, DateRange dateRange) throws UnknownSymbolRuntimeException {
         ensureCryptoSymbolIsSupported(cryptoSymbol);
-        return cryptoRepository.loadFullPriceHistory(cryptoSymbol.toUpperCase())
-                .filter(priceSnapshot -> dateRange.isWithinRange(priceSnapshot.getTimestamp()))
+        return cryptoRepository.loadPriceHistory(cryptoSymbol.toUpperCase(), dateRange)
                 .reduce(new MutablePriceRangeDetails(), (acc, value) -> {
                     acc.minPrice = acc.hasMin() ? acc.minPrice.min(value.getPrice()) : value.getPrice();
                     acc.maxPrice = acc.hasMax() ? acc.maxPrice.max(value.getPrice()) : value.getPrice();
@@ -43,7 +42,7 @@ public class CryptoServiceImpl implements CryptoService {
                     acc.newestPrice = value.getPrice();
                     return acc;
                 })
-                .filter(it -> it.hasMin() && it.hasMax())
+                .filter(MutablePriceRangeDetails::isInitializedWithAtLeastOnePriceSnapshot)
                 .map(it -> new PriceRangeDetails(cryptoSymbol.toUpperCase(), it.oldestPrice, it.newestPrice, it.minPrice, it.maxPrice));
     }
 
@@ -72,6 +71,10 @@ public class CryptoServiceImpl implements CryptoService {
 
         boolean hasMax() {
             return maxPrice != null;
+        }
+
+        boolean isInitializedWithAtLeastOnePriceSnapshot() {
+            return hasMin() && hasMax();
         }
     }
 }

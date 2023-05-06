@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/cryptos")
-@Api("Cryptocurrency recommendation endpoint")
+@Api("Cryptocurrency recommendation API")
 public class RecommendationController {
 
     private final CryptoService cryptoService;
@@ -57,11 +57,8 @@ public class RecommendationController {
             @ApiParam(value = "Limits the size of cryptocurrency ranking")
             Optional<Integer> limit
     ) {
-        LocalDate YEAR_1900 = LocalDate.of(1900, 1, 1);
-        LocalDate YEAR_9999 = LocalDate.of(9999, 1, 1);
-
         return cryptoService.rankCryptos(limit.orElse(Integer.MAX_VALUE),
-                new DateRange(fromDate.orElse(YEAR_1900), toDate.orElse(YEAR_9999))
+                new DateRange(fromDate.orElse(DateRange.MIN), toDate.orElse(DateRange.MAX))
         );
     }
 

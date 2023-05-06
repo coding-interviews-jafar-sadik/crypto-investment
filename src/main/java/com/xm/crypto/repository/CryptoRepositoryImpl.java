@@ -2,11 +2,13 @@ package com.xm.crypto.repository;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import com.xm.crypto.dto.DateRange;
 import com.xm.crypto.dto.PriceSnapshot;
 import com.xm.crypto.enums.SupportedCryptocurrencies;
 import com.xm.crypto.exceptions.GenericApplicationRuntimeException;
 import com.xm.crypto.exceptions.UnknownSymbolRuntimeException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
@@ -29,15 +31,18 @@ import static java.lang.Long.parseLong;
 @Repository
 public class CryptoRepositoryImpl implements CryptoRepository {
 
+    @Value("${price-data-path}")
+    private String priceDataPath;
+
     @Override
     public List<String> getSupportedSymbols() {
         return Arrays.stream(SupportedCryptocurrencies.values())
                 .map(Enum::toString)
-                 .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Flux<PriceSnapshot> loadFullPriceHistory(String symbol) {
+    public Flux<PriceSnapshot> loadPriceHistory(String symbol, DateRange dateRange) {
         int tableHeaderRow = 1;
         int timestampColumn = 0;
         int priceColumn = 2;
@@ -47,6 +52,7 @@ public class CryptoRepositoryImpl implements CryptoRepository {
             return Flux.fromStream(csvReader.readAll().stream()
                     .skip(tableHeaderRow)
                     .map(csv -> new PriceSnapshot(toLocalDateTime(parseLong(csv[timestampColumn])), new BigDecimal(csv[priceColumn])))
+                    .filter(priceSnapshot -> dateRange.isWithinRange(priceSnapshot.getTimestamp()))
             );
         } catch (IOException | CsvException e) {
             log.warn("Failed to load price history for symbol '{}'", symbol, e);
@@ -55,10 +61,10 @@ public class CryptoRepositoryImpl implements CryptoRepository {
     }
 
     private URL getResourceURL(String cryptoSymbol) {
-        String resourcePath = "prices/" + cryptoSymbol.toUpperCase() + "_values.csv";
+        String resourcePath = priceDataPath + cryptoSymbol.toUpperCase() + "_values.csv";
         URL resource = getClass().getClassLoader().getResource(resourcePath);
         if (resource == null) {
-            log.info("Resource doesn't exist: " + "prices/" + cryptoSymbol.toUpperCase() + "_values.csv");
+            log.info("Resource doesn't exist: " + resourcePath);
             throw new UnknownSymbolRuntimeException(cryptoSymbol);
         }
         return resource;

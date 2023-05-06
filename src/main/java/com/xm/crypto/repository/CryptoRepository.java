@@ -1,5 +1,6 @@
 package com.xm.crypto.repository;
 
+import com.xm.crypto.dto.DateRange;
 import com.xm.crypto.dto.PriceSnapshot;
 import reactor.core.publisher.Flux;
 
@@ -16,7 +17,8 @@ public interface CryptoRepository {
      * Loads full price history for a given cryptocurrency
      *
      * @param cryptoSymbol cryptocurrency symbol
+     * @param dateRange    the date range to search for price history
      * @return full price history
      */
-    Flux<PriceSnapshot> loadFullPriceHistory(String cryptoSymbol);
+    Flux<PriceSnapshot> loadPriceHistory(String cryptoSymbol, DateRange dateRange);
 }

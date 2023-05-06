@@ -18,6 +18,6 @@ public class DateRange {
     }
 
     public static DateRange unbounded() {
-        return new DateRange(LocalDate.of(1, 1, 1), LocalDate.of(9999, 1, 1));
+        return new DateRange(LocalDate.MIN, LocalDate.MAX);
     }
 }

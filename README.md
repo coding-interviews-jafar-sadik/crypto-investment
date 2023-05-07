@@ -6,8 +6,7 @@ with a compatible Spring Boot version `2.7.11`.
 
 It can be built directly with Gradle wrapper `./gradlew build` and then run `java -jar build/libs/crypto-recommendation-service.jar`.
 
-Another option is to use Docker to build application and package it in a container `docker build -t crypto-recommendation-service:latest .`.
-Next, you can use the following command to run it on port 8080 `docker run -p 8080:8080 crypto-recommendation-service:latest`. 
+Another option is to run the most recent image from Docker Hub `docker run --pull always -p 8080:8080 dzafarsadik/crypto-recommendation-service:latest`
 
 You will be able to access the application with web browser or even command line using tools like for example HTTPie: 
 ```

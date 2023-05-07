@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  crypto-api:
+    build: .
+    image: dzafarsadik/crypto-recommendation-service:latest
+    ports:
+      - "8081:8080"
+    networks:
+      - shared-network
+
+  api-gateway:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    depends_on:
+      - crypto-api
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/:ro
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    driver: bridge

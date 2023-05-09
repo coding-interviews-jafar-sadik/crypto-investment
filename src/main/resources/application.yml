@@ -6,7 +6,6 @@ server:
   error:
     whitelabel:
       enabled: false
-  address: 127.0.0.1
-  port: 8080
+  address: http://localhost:8080
 
 price-data-path: prices/

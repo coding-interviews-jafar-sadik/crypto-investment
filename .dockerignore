@@ -1,0 +1,6 @@
+.gitignore
+build
+.git
+.github
+.idea
+.gradle
